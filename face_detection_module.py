@@ -10,8 +10,28 @@ video = cv.VideoCapture(video_path)
 
 pTime = 0
 
+# imports the necessary libraries and creates an 
+# instance of the Face Detection model from the Mediapipe library.
+mp_face_detection = mp.solutions.face_detection
+mp_draw = mp.solutions.drawing_utils
+face_detection = mp_face_detection.FaceDetection()
+
 while True:
     isTrue, frame = video.read()
+
+    # mediapipe reads RGB images 
+    # so we need to convert the BGR image to RGB
+    frame_rgb = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+    results = face_detection.process(frame_rgb)
+    # print(results)  # <class 'mediapipe.python.solution_base.SolutionOutputs'>
+    
+    if results.detections:
+        for faceID, detection in enumerate(results.detections):
+            # This id default datatype to draw rectangle on detected faces
+            mp_draw.draw_detection(frame,detection)
+            # print(faceID, detection)  # faceID -> says no.of detected faces,
+                                        # detection -> shows the bounding box and score
+            # print(faceID, detection.score)  # score -> accuracy
 
     # print frame pre seconds FPS
     # to find speed of capture
